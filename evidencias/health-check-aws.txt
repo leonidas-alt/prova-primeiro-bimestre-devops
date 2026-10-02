@@ -1,0 +1,1 @@
+{"status":"healthy","db":"connected","uptime":433.661839593}

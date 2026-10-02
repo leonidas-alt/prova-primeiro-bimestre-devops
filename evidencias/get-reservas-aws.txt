@@ -1,0 +1,1 @@
+[{"id":1,"cliente":"Maria Silva","data":"2026-11-01","status":"pendente","criado_em":"2026-10-02T02:46:07.060Z"}]
