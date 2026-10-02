@@ -1,0 +1,64 @@
+services:
+
+  # ── API TechNova (Node.js + Express) ──────────────────────────────────────
+  api:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: technova-api
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: "3000"
+      # Variáveis que db.js lê (Pool usa POSTGRES_*)
+      POSTGRES_USER:     ${POSTGRES_USER:-technova}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB:       ${POSTGRES_DB:-technova}
+      DB_HOST:           postgres
+      DB_PORT:           "5432"
+      DB_SSL:            "false"
+    depends_on:
+      postgres:
+        condition: service_healthy   # só sobe depois que o banco passar no healthcheck
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    networks:
+      - technova-network
+    restart: unless-stopped
+
+  # ── PostgreSQL ────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:15-alpine
+    container_name: technova-db
+    environment:
+      POSTGRES_DB:       ${POSTGRES_DB:-technova}
+      POSTGRES_USER:     ${POSTGRES_USER:-technova}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - technova-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-technova} -d ${POSTGRES_DB:-technova}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+# ── Rede bridge customizada ────────────────────────────────────────────────
+networks:
+  technova-network:
+    driver: bridge
+
+# ── Volume nomeado para persistência ──────────────────────────────────────
+volumes:
+  pgdata:
+    driver: local

@@ -1,0 +1,45 @@
+# ── Node.js ────────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.npm
+
+# ── Variáveis de ambiente (segredos) ──────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Terraform ─────────────────────────────────────────────────────────────
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+*.tfvars
+!*.tfvars.example
+tfplan
+tfplan.bin
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# ── Chaves e certificados ──────────────────────────────────────────────────
+*.pem
+*.key
+*.p12
+*.pfx
+
+# ── AWS ────────────────────────────────────────────────────────────────────
+.aws/
+
+# ── Sistema operacional ────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── IDEs ───────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
